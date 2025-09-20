@@ -25,10 +25,11 @@ public class Bird extends Actor {
     display.add(wing2);
   }
 
-  public void move(Cell target) {
-    
-    if(target == null) return; //no move made
 
+  @Override
+  public void move(Cell target) {
+    if(target == null) return; //no move made
+    
     int dirX = target.x - loc.x;
     int dirY = target.y - loc.y;
     for (Polygon p : display) {

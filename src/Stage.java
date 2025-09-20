@@ -73,10 +73,12 @@ public class Stage extends JPanel{
     repaint();
   }
 
+
   //removes item from the stage
   public void removeItem(Item item) {
     items.remove(item);
   }
+
   
   //checks whether an item needs to be removed based on actor's position
   public void checkItemCollect() {

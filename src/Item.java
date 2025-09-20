@@ -12,7 +12,7 @@ public abstract class Item implements Collectible {
     this.loc = loc;
     this.color = color;
   }
-
+  //
   public void paint(Graphics g) {
     for(Polygon p: display) {
       g.setColor(color);
