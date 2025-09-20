@@ -4,15 +4,13 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.swing.JPanel;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
-public class Stage extends JPanel{
+public class Stage{
   Grid grid;
   List<Actor> actors;
   List<Item> items;
   Cell selectedCell = null;
+  Actor selectedActor = null;
 
   public Stage() {
     grid = new Grid();
@@ -31,20 +29,34 @@ public class Stage extends JPanel{
     items.add(new Fish(grid.cellAtColRow(3, 12).get()));
     items.add(new Fish(grid.cellAtColRow(7, 8).get()));
     items.add(new Fish(grid.cellAtColRow(14, 2).get()));
-
-    addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent e) {
-        Optional<Cell> clickedCell = grid.cellAtPoint(e.getPoint());
-        if(clickedCell.isPresent()) {
-          selectedCell = clickedCell.get();
-          System.out.println("Clicked on cell: " + (char)('A' + selectedCell.col) + (selectedCell.row + 1));
-        } else {
-          selectedCell = null;
-        }
-      }
-    });
   }
+
+  public void handleClick(Point mousePoint) {
+    Optional<Cell> clickedCell = grid.cellAtPoint(mousePoint);
+    if(!clickedCell.isPresent()) return;
+
+    Cell cell = clickedCell.get();
+
+    //select an actor if one exists at the clicked cell
+    for(Actor a : actors){
+      if(a.isOn(cell) && (a instanceof Dog || a instanceof Cat)) {
+        selectedActor = a;
+        return;
+      }
+    }
+
+    //move selected actor to clicked cell if it's a neighbor
+    if(selectedActor != null) {
+      ArrayList<Cell> neighbors = grid.getNeighbors(selectedActor.loc);
+      boolean contains = neighbors.contains(cell);
+
+      if(contains) {
+        selectedActor.move(cell);
+        selectedActor = null; //deselect after move
+        checkItemCollect();
+      } 
+    }
+  }  
 
   public void paint(Graphics g, Point mouseLoc) {
     grid.paint(g, mouseLoc);
@@ -56,30 +68,18 @@ public class Stage extends JPanel{
     for(Actor a: actors) {
       a.paint(g);
     }
-    Optional<Cell> underMouse = grid.cellAtPoint(mouseLoc);
-    if(underMouse.isPresent()) {
-      Cell hoverCell = underMouse.get();
-      g.setColor(Color.DARK_GRAY);
-      g.drawString(String.valueOf(hoverCell.col) + String.valueOf(hoverCell.row), 740, 30);
+
+    //hover highlight
+    if(mouseLoc != null){
+      Optional<Cell> underMouse = grid.cellAtPoint(mouseLoc);
+      if(underMouse.isPresent()) {
+        Cell hoverCell = underMouse.get();
+        g.setColor(Color.DARK_GRAY);
+        g.drawString(String.valueOf(hoverCell.col) + String.valueOf(hoverCell.row), 740, 30);
+      }
     }
   }
 
-  public void update() {
-    for(Actor a: actors) {
-      a.move(selectedCell);
-    }
-    selectedCell = null; //reset selected cell after move
-    checkItemCollect();
-    repaint();
-  }
-
-
-  //removes item from the stage
-  public void removeItem(Item item) {
-    items.remove(item);
-  }
-
-  
   //checks whether an item needs to be removed based on actor's position
   public void checkItemCollect() {
     for(Actor actor: actors) {
@@ -93,5 +93,9 @@ public class Stage extends JPanel{
         }
       }    
     }
+  }
+
+  public boolean gameOver() {
+    return items.isEmpty();
   }
 }

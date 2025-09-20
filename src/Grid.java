@@ -54,7 +54,7 @@ public class Grid {
   }
 
   public ArrayList<Cell> getNeighbors(Cell c) {
-    int x = c.col;
+    int x = labelToCol(c.col);
     int y = c.row;
     ArrayList<Cell> neighbors = new ArrayList<>();
 

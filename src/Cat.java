@@ -26,7 +26,7 @@ public class Cat extends Actor {
 
   @Override
   public void move(Cell target) {
-    if(target == null) return; //no move made
+    if(target == null || !isNeighbor(target)) return; //no move made
     
     int dirX = target.x - loc.x;
     int dirY = target.y - loc.y;
@@ -38,5 +38,11 @@ public class Cat extends Actor {
       p.invalidate();
     }
     loc = target;
+  }
+
+  private boolean isNeighbor(Cell target) {
+    int dx = Math.abs((int)target.col - (int)loc.col);
+    int dy = Math.abs(target.row - loc.row);
+    return (dx <= 1 && dy <= 1) && (dx + dy != 0);
   }
 }
