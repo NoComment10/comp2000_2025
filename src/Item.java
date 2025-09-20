@@ -3,12 +3,15 @@ import java.awt.Graphics;
 import java.awt.Polygon;
 import java.util.List;
 
-public abstract class Actor {
+public abstract class Item implements Collectible {
   Color color;
   Cell loc;
   List<Polygon> display;
 
-  // public abstract void move();
+  public Item(Cell loc, Color color) {
+    this.loc = loc;
+    this.color = color;
+  }
 
   public void paint(Graphics g) {
     for(Polygon p: display) {
@@ -19,7 +22,7 @@ public abstract class Actor {
     }
   }
 
-  public boolean isOn(Cell c) {
-    return loc == c;
+  public Cell getLocation() {
+    return loc;
   }
 }
