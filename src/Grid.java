@@ -1,5 +1,6 @@
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class Grid {
@@ -50,5 +51,23 @@ public class Grid {
       }
     }
     return Optional.empty();
+  }
+
+  public ArrayList<Cell> getNeighbors(Cell c) {
+    int x = c.col;
+    int y = c.row;
+    ArrayList<Cell> neighbors = new ArrayList<>();
+
+    for(int dirX = -1; dirX <= 1; dirX++) {
+        for(int dirY = -1; dirY <= 1; dirY++) {
+            if(dirX == 0 && dirY == 0) continue; // Skip the cell itself
+            int newX = x + dirX;
+            int newY = y + dirY;
+            if(newX >= 0 && newX < cells.length && newY >= 0 && newY < cells[0].length) {
+                neighbors.add(cells[newX][newY]);
+            }
+        }
+    }
+    return neighbors;
   }
 }

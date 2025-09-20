@@ -24,4 +24,22 @@ public class Bird extends Actor {
     display.add(wing1);
     display.add(wing2);
   }
+
+  public void move(Cell target) {
+    
+    if(target == null) return; //no move made
+
+    int dirX = target.x - loc.x;
+    int dirY = target.y - loc.y;
+    for (Polygon p : display) {
+      for (int i = 0; i < p.npoints; i++) {
+        p.xpoints[i] += dirX;
+        p.ypoints[i] += dirY;
+      }
+      p.invalidate();
+    }
+    loc = target;
+  }
+
+  
 }

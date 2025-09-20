@@ -1,15 +1,18 @@
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.swing.JPanel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-public class Stage {
+public class Stage extends JPanel{
   Grid grid;
   List<Actor> actors;
   List<Item> items;
+  Cell selectedCell = null;
 
   public Stage() {
     grid = new Grid();
@@ -25,6 +28,22 @@ public class Stage {
     items.add(new Bone(grid.cellAtColRow(5, 5).get()));
     items.add(new Bone(grid.cellAtColRow(10, 10).get())); 
     items.add(new Bone(grid.cellAtColRow(15, 15).get()));
+    items.add(new Fish(grid.cellAtColRow(3, 12).get()));
+    items.add(new Fish(grid.cellAtColRow(7, 8).get()));
+    items.add(new Fish(grid.cellAtColRow(14, 2).get()));
+
+    addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        Optional<Cell> clickedCell = grid.cellAtPoint(e.getPoint());
+        if(clickedCell.isPresent()) {
+          selectedCell = clickedCell.get();
+          System.out.println("Clicked on cell: " + (char)('A' + selectedCell.col) + (selectedCell.row + 1));
+        } else {
+          selectedCell = null;
+        }
+      }
+    });
   }
 
   public void paint(Graphics g, Point mouseLoc) {
@@ -45,16 +64,32 @@ public class Stage {
     }
   }
 
-  public void removeItem(Item item, Actor actor) {
-    for(Item i: new ArrayList<>(items)) {
-      if (actor.isOn(i.getLocation())) {
-        item.onCollect(actor);
-        if(actor instanceof Dog) {
-          items.remove(item);
-        }        
-      }
+  public void update() {
+    for(Actor a: actors) {
+      a.move(selectedCell);
     }
-    
-    System.out.println("Item removed from the stage.");
+    selectedCell = null; //reset selected cell after move
+    checkItemCollect();
+    repaint();
+  }
+
+  //removes item from the stage
+  public void removeItem(Item item) {
+    items.remove(item);
+  }
+  
+  //checks whether an item needs to be removed based on actor's position
+  public void checkItemCollect() {
+    for(Actor actor: actors) {
+      for(Item i: new ArrayList<>(items)) {
+        if (actor.isOn(i.getLocation())) {
+          i.onCollect(actor);
+          if((actor instanceof Dog && i instanceof Bone) ||
+            (actor instanceof Cat && i instanceof Fish)) {
+            items.remove(i);
+          }        
+        }
+      }    
+    }
   }
 }

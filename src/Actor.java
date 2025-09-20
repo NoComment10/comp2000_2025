@@ -8,7 +8,7 @@ public abstract class Actor {
   Cell loc;
   List<Polygon> display;
 
-  // public abstract void move();
+  public abstract void move(Cell target);
 
   public void paint(Graphics g) {
     for(Polygon p: display) {
@@ -22,4 +22,6 @@ public abstract class Actor {
   public boolean isOn(Cell c) {
     return loc == c;
   }
+
+  
 }
