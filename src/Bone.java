@@ -16,18 +16,17 @@ public class Bone extends Item {
     bone.addPoint(loc.x + 5, loc.y + 15);
     bone.addPoint(loc.x + 5, loc.y + 10);
     display.add(bone);
-  }
-
+  }  
   @Override
   public void onCollect(Actor collector) {
     //need bone to disappear from the grid when touched by dog
     if(collector.isOn(this.getLocation())) {
-        if(collector instanceof Dog){
-            System.out.println("Dog collected the bone!");
-        } else {
-            System.out.println("Only dogs can collect bones!");
-            return; // Do not remove the bone if not collected by a dog
-        }
+      if(collector instanceof Dog){
+        System.out.println("Dog collected the bone!");
+      } else {
+        System.out.println("Only dogs can collect bones!");
+        return;
+      }
     }
   }  
 }

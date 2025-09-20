@@ -18,10 +18,8 @@ public abstract class Actor {
       g.drawPolygon(p);
     }
   }
-
+  
   public boolean isOn(Cell c) {
     return loc == c;
-  }
-
-  
+  }  
 }

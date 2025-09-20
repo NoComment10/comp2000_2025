@@ -25,7 +25,6 @@ public class Dog extends Actor {
     display.add(ear2);
   }
 
-  
   @Override
   public void move(Cell target) {
     if(target == null || !isNeighbor(target)) return; //no move made

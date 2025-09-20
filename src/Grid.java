@@ -18,7 +18,7 @@ public class Grid {
     return (char) (col + Character.valueOf('A'));
   }
 
-  private int labelToCol(char col) {
+  public int labelToCol(char col) {
     return (int) (col - Character.valueOf('A'));
   }
 
@@ -69,5 +69,13 @@ public class Grid {
         }
     }
     return neighbors;
+  }
+
+  public Cell getCell(int col, int row) {
+    if(col >= 0 && col < cells.length && row >= 0 && row < cells[0].length){
+      return cells[col][row];
+    } else {
+      return null;
+    }
   }
 }

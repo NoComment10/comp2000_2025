@@ -3,8 +3,19 @@ import java.awt.Polygon;
 import java.util.ArrayList;
 
 public class Bird extends Actor {
-  public Bird(Cell inLoc) {
-    loc = inLoc;
+  public ArrayList<Cell> patrolRoute;
+  public int startIndex;
+  public int routeIndex;
+
+  public Bird(Cell itemCell, Grid grid, int startIndex){
+    this.startIndex = startIndex;
+    this.patrolRoute = generateOrderedRoute(itemCell, grid);
+
+    if(!patrolRoute.isEmpty()){
+      routeIndex = (startIndex - 1 + patrolRoute.size()) % patrolRoute.size();
+      loc = patrolRoute.get((routeIndex + 1) % patrolRoute.size());
+    }
+
     color = Color.GREEN;
     display = new ArrayList<Polygon>();
     Polygon wing1 = new Polygon();
@@ -25,22 +36,40 @@ public class Bird extends Actor {
     display.add(wing2);
   }
 
-
   @Override
-  public void move(Cell target) {
-    if(target == null) return; //no move made
-    
-    int dirX = target.x - loc.x;
-    int dirY = target.y - loc.y;
-    for (Polygon p : display) {
-      for (int i = 0; i < p.npoints; i++) {
+  public void move(Cell ignore){
+    if(patrolRoute == null || patrolRoute.isEmpty()) return;
+
+    Cell next = patrolRoute.get(routeIndex);
+
+    int dirX = next.x - loc.x;
+    int dirY = next.y - loc.y;
+
+    for(Polygon p: display){
+      for(int i = 0; i < p.npoints; i++){
         p.xpoints[i] += dirX;
         p.ypoints[i] += dirY;
       }
       p.invalidate();
     }
-    loc = target;
+
+    loc = next;
+    routeIndex = (routeIndex + 1) % patrolRoute.size();
   }
 
-  
+  public ArrayList<Cell> generateOrderedRoute(Cell loc, Grid grid){
+    int x = grid.labelToCol(loc.col);
+    int y = loc.row;
+    ArrayList<Cell> route = new ArrayList<>();
+
+    route.add(grid.getCell(x, y - 1)); //left
+    route.add(grid.getCell(x + 1, y - 1)); //bottom left
+    route.add(grid.getCell(x + 1, y)); //bottom
+    route.add(grid.getCell(x + 1, y + 1)); //bottom right
+    route.add(grid.getCell(x, y + 1)); //right
+    route.add(grid.getCell(x - 1, y + 1)); //top right
+    route.add(grid.getCell(x - 1, y)); //top
+    route.add(grid.getCell(x - 1, y - 1)); //top left
+    return route;
+  }
 }

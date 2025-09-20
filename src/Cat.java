@@ -30,8 +30,8 @@ public class Cat extends Actor {
     
     int dirX = target.x - loc.x;
     int dirY = target.y - loc.y;
-    for (Polygon p : display) {
-      for (int i = 0; i < p.npoints; i++) {
+    for(Polygon p : display) {
+      for(int i = 0; i < p.npoints; i++) {
         p.xpoints[i] += dirX;
         p.ypoints[i] += dirY;
       }

@@ -7,20 +7,17 @@ import java.util.Optional;
 
 public class Stage{
   Grid grid;
-  List<Actor> actors;
+  List<Actor> userActor;
+  List<Actor> enemyActor;
   List<Item> items;
   Cell selectedCell = null;
   Actor selectedActor = null;
 
   public Stage() {
     grid = new Grid();
-    actors = new ArrayList<Actor>();
+    userActor = new ArrayList<Actor>();
+    enemyActor = new ArrayList<Actor>();
     items = new ArrayList<Item>();
-
-    //adding actors to the stage
-    actors.add(new Cat(grid.cellAtColRow(0, 0).get()));
-    actors.add(new Dog(grid.cellAtColRow(0, 15).get()));
-    actors.add(new Bird(grid.cellAtColRow(12, 9).get()));   
 
     //adding items to the stage
     items.add(new Bone(grid.cellAtColRow(5, 5).get()));
@@ -29,6 +26,20 @@ public class Stage{
     items.add(new Fish(grid.cellAtColRow(3, 12).get()));
     items.add(new Fish(grid.cellAtColRow(7, 8).get()));
     items.add(new Fish(grid.cellAtColRow(14, 2).get()));
+
+    //adding user controlled actors to the stage
+    userActor.add(new Cat(grid.cellAtColRow(0, 0).get()));
+    userActor.add(new Dog(grid.cellAtColRow(0, 15).get()));
+
+    //adding enemy actors to the stage
+    enemyActor.add(new Bird(items.get(0).getLocation(), grid, 0));   
+    enemyActor.add(new Bird(items.get(1).getLocation(), grid, 4)); 
+    enemyActor.add(new Bird(items.get(2).getLocation(), grid, 7)); 
+    enemyActor.add(new Bird(items.get(3).getLocation(), grid, 2)); 
+    enemyActor.add(new Bird(items.get(4).getLocation(), grid, 3)); 
+    enemyActor.add(new Bird(items.get(5).getLocation(), grid, 5)); 
+
+
   }
 
   public void handleClick(Point mousePoint) {
@@ -38,7 +49,7 @@ public class Stage{
     Cell cell = clickedCell.get();
 
     //select an actor if one exists at the clicked cell
-    for(Actor a : actors){
+    for(Actor a : userActor){
       if(a.isOn(cell) && (a instanceof Dog || a instanceof Cat)) {
         selectedActor = a;
         return;
@@ -54,7 +65,17 @@ public class Stage{
         selectedActor.move(cell);
         selectedActor = null; //deselect after move
         checkItemCollect();
+
+        for(Actor a: enemyActor) {
+          if(a instanceof Bird) {
+            a.move(null); //birds patrol, target not needed
+          }
+        }
       } 
+
+      if(gameOver()) {
+        System.exit(0);
+      }
     }
   }  
 
@@ -65,7 +86,11 @@ public class Stage{
       i.paint(g);
     }
 
-    for(Actor a: actors) {
+    for(Actor a: enemyActor) {
+      a.paint(g);
+    }
+
+    for(Actor a: userActor) {
       a.paint(g);
     }
 
@@ -80,9 +105,10 @@ public class Stage{
     }
   }
 
+
   //checks whether an item needs to be removed based on actor's position
   public void checkItemCollect() {
-    for(Actor actor: actors) {
+    for(Actor actor: userActor) {
       for(Item i: new ArrayList<>(items)) {
         if (actor.isOn(i.getLocation())) {
           i.onCollect(actor);
@@ -96,6 +122,19 @@ public class Stage{
   }
 
   public boolean gameOver() {
-    return items.isEmpty();
+    for(Actor user: userActor) {
+      for(Actor enemy: enemyActor) {
+        if(enemy instanceof Bird && user.isOn(enemy.loc)) {
+          System.out.println("Game Over! A bird caught you!");
+          return true;
+        }
+      }
+    }
+
+    if(items.isEmpty()) {
+      System.out.println("Congratulations! You've collected all the items!");
+      return true;
+    }
+    return false;
   }
 }

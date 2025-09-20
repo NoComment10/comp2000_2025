@@ -10,9 +10,9 @@ public abstract class Item implements Collectible {
 
   public Item(Cell loc, Color color) {
     this.loc = loc;
-    this.color = color;
+    this.color = color;    
   }
-  //
+
   public void paint(Graphics g) {
     for(Polygon p: display) {
       g.setColor(color);
