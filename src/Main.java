@@ -24,6 +24,7 @@ public class Main extends JFrame {
     public Canvas() {
       setPreferredSize(new Dimension(1024, 720));
 
+      //handles mouse clicks
       addMouseListener(new MouseAdapter(){
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -48,6 +49,7 @@ public class Main extends JFrame {
     this.setVisible(true);
   }
 
+  //starts the game loop
   private void startGame() {
     Timer timer = new Timer(30, e -> {
       canvas.repaint();

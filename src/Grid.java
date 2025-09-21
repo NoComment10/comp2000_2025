@@ -53,14 +53,17 @@ public class Grid {
     return Optional.empty();
   }
 
+  //returns an ArryList of neighboring cells (including diagonals)
   public ArrayList<Cell> getNeighbors(Cell c) {
     int x = labelToCol(c.col);
     int y = c.row;
     ArrayList<Cell> neighbors = new ArrayList<>();
 
+    //check all 8 directions around the cell and adds valid neighbors
     for(int dirX = -1; dirX <= 1; dirX++) {
         for(int dirY = -1; dirY <= 1; dirY++) {
-            if(dirX == 0 && dirY == 0) continue; // Skip the cell itself
+            // Skip the cell itself
+            if(dirX == 0 && dirY == 0) continue; 
             int newX = x + dirX;
             int newY = y + dirY;
             if(newX >= 0 && newX < cells.length && newY >= 0 && newY < cells[0].length) {
@@ -71,6 +74,7 @@ public class Grid {
     return neighbors;
   }
 
+  //returns the cell at the specified column and row, or null if out of bounds
   public Cell getCell(int col, int row) {
     if(col >= 0 && col < cells.length && row >= 0 && row < cells[0].length){
       return cells[col][row];

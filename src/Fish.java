@@ -19,12 +19,14 @@ public class Fish extends Item {
     display.add(tail);
   }
 
+  //announces when the fish is collected by a cat and adds it to the cat's bag
   @Override
   public void onCollect(Actor collector) {
-    //need bone to disappear from the grid when touched by dog
     if(collector.isOn(this.getLocation())) {
       if(collector instanceof Cat){
-        //add counter of item collects to end game eventually
+        //adds the collected bone to the dog's bag
+        ((Cat)collector).fishBag.addItem(this);
+
         System.out.println("Cat collected the fish!");
       } else {
         System.out.println("Only cats can collect fish!");

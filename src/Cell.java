@@ -18,7 +18,7 @@ public class Cell extends Rectangle {
     if(contains(mousePos)) {
       g.setColor(Color.GRAY);
     } else {
-      g.setColor(Color.WHITE);
+      g.setColor(new Color(30, 70, 2));
     }
     g.fillRect(x, y, size, size);
     g.setColor(Color.BLACK);

@@ -29,7 +29,7 @@ public class Stage{
 
     //adding user controlled actors to the stage
     userActor.add(new Cat(grid.cellAtColRow(0, 0).get()));
-    userActor.add(new Dog(grid.cellAtColRow(0, 15).get()));
+    userActor.add(new Dog(grid.cellAtColRow(19, 19).get()));
 
     //adding enemy actors to the stage
     enemyActor.add(new Bird(items.get(0).getLocation(), grid, 0));   
@@ -42,6 +42,7 @@ public class Stage{
 
   }
 
+  //handles mouse clicks for selecting and moving user controlled actors
   public void handleClick(Point mousePoint) {
     Optional<Cell> clickedCell = grid.cellAtPoint(mousePoint);
     if(!clickedCell.isPresent()) return;
@@ -63,12 +64,14 @@ public class Stage{
 
       if(contains) {
         selectedActor.move(cell);
-        selectedActor = null; //deselect after move
+        //deselect after move
+        selectedActor = null; 
         checkItemCollect();
 
         for(Actor a: enemyActor) {
           if(a instanceof Bird) {
-            a.move(null); //birds patrol, target not needed
+            //birds patrol, target not needed
+            a.move(null); 
           }
         }
       } 
@@ -111,7 +114,10 @@ public class Stage{
     for(Actor actor: userActor) {
       for(Item i: new ArrayList<>(items)) {
         if (actor.isOn(i.getLocation())) {
+          //calls the onCollect method of the item
           i.onCollect(actor);
+
+          //removes the item from the stage if collected by the correct actor
           if((actor instanceof Dog && i instanceof Bone) ||
             (actor instanceof Cat && i instanceof Fish)) {
             items.remove(i);
@@ -121,18 +127,25 @@ public class Stage{
     }
   }
 
+  //checks for game over conditions
   public boolean gameOver() {
+    //bird catches user
     for(Actor user: userActor) {
       for(Actor enemy: enemyActor) {
         if(enemy instanceof Bird && user.isOn(enemy.loc)) {
           System.out.println("Game Over! A bird caught you!");
+          System.out.println("Dog collected " + ((Dog)userActor.get(1)).boneBag.getItemCount() + " bones.");
+          System.out.println("Cat collected " + ((Cat)userActor.get(0)).fishBag.getItemCount() + " fish.");
           return true;
         }
       }
     }
 
+    //all items collected
     if(items.isEmpty()) {
       System.out.println("Congratulations! You've collected all the items!");
+      System.out.println("Dog collected " + ((Dog)userActor.get(1)).boneBag.getItemCount() + " bones.");
+      System.out.println("Cat collected " + ((Cat)userActor.get(0)).fishBag.getItemCount() + " fish.");
       return true;
     }
     return false;

@@ -3,9 +3,12 @@ import java.awt.Polygon;
 import java.util.ArrayList;
 
 public class Cat extends Actor {
+  //bag to store collected fish
+  public Bag<Fish> fishBag = new Bag<>();
+
   public Cat(Cell inLoc) {
     loc = inLoc;
-    color = Color.BLUE;
+    color = new Color(255, 253, 208);
     display = new ArrayList<Polygon>();
     Polygon ear1 = new Polygon();
     ear1.addPoint(loc.x + 11, loc.y + 5);
@@ -24,10 +27,13 @@ public class Cat extends Actor {
     display.add(ear2);
   }
 
+  //moves the cat to a neighboring cell
   @Override
   public void move(Cell target) {
-    if(target == null || !isNeighbor(target)) return; //no move made
+    //checks if the target cell is valid
+    if(target == null || !isNeighbor(target)) return;
     
+    //redraws the cat in the new position
     int dirX = target.x - loc.x;
     int dirY = target.y - loc.y;
     for(Polygon p : display) {
@@ -40,6 +46,7 @@ public class Cat extends Actor {
     loc = target;
   }
 
+  //checks if the target cell is a neighbor of the current location
   private boolean isNeighbor(Cell target) {
     int dx = Math.abs((int)target.col - (int)loc.col);
     int dy = Math.abs(target.row - loc.row);

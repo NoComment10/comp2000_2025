@@ -19,6 +19,7 @@ public abstract class Actor {
     }
   }
   
+  //checks if the actor is on a specific cell
   public boolean isOn(Cell c) {
     return loc == c;
   }  

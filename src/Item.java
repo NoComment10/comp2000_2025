@@ -13,6 +13,7 @@ public abstract class Item implements Collectible {
     this.color = color;    
   }
 
+  //paints the item on the grid
   public void paint(Graphics g) {
     for(Polygon p: display) {
       g.setColor(color);
@@ -22,6 +23,7 @@ public abstract class Item implements Collectible {
     }
   }
 
+  //returns the location of the item
   public Cell getLocation() {
     return loc;
   }

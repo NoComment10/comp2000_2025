@@ -3,7 +3,10 @@ import java.awt.Polygon;
 import java.util.ArrayList;
 
 public class Bone extends Item {
+
   public Bone(Cell inLoc) {
+
+    //setting the color and shape of the bone
     super(inLoc, Color.WHITE);
     display = new ArrayList<Polygon>();
     Polygon bone = new Polygon();
@@ -17,11 +20,15 @@ public class Bone extends Item {
     bone.addPoint(loc.x + 5, loc.y + 10);
     display.add(bone);
   }  
+
+  //announces when the bone is collected by a dog and adds it to the dog's bag
   @Override
   public void onCollect(Actor collector) {
-    //need bone to disappear from the grid when touched by dog
     if(collector.isOn(this.getLocation())) {
       if(collector instanceof Dog){
+        //adds the collected bone to the dog's bag
+        ((Dog)collector).boneBag.addItem(this);
+
         System.out.println("Dog collected the bone!");
       } else {
         System.out.println("Only dogs can collect bones!");

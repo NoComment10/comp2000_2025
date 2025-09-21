@@ -1,5 +1,6 @@
 public class CharacterMove {
 
+    //moves the dog to the selected cell
     public static void dogMove(Stage stage) {
         for (Actor actor : stage.userActor) {
             if (actor instanceof Dog) {
@@ -8,6 +9,7 @@ public class CharacterMove {
         }
     }
 
+    //moves the cat to the selected cell
     public static void catMove(Stage stage) {
         for (Actor actor : stage.userActor) {
             if (actor instanceof Cat) {
@@ -16,6 +18,7 @@ public class CharacterMove {
         }
     }
 
+    //moves the bird to the next cell in its patrol route
     public static void birdMove(Stage stage) {
         for (Actor actor : stage.enemyActor) {
             if (actor instanceof Bird) {

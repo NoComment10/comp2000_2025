@@ -11,12 +11,13 @@ public class Bird extends Actor {
     this.startIndex = startIndex;
     this.patrolRoute = generateOrderedRoute(itemCell, grid);
 
+    //checks whether the patrol route is empty or not
     if(!patrolRoute.isEmpty()){
       routeIndex = (startIndex - 1 + patrolRoute.size()) % patrolRoute.size();
       loc = patrolRoute.get((routeIndex + 1) % patrolRoute.size());
     }
 
-    color = Color.GREEN;
+    color = new Color(136, 8, 8);
     display = new ArrayList<Polygon>();
     Polygon wing1 = new Polygon();
     wing1.addPoint(loc.x + 5, loc.y + 5);
@@ -36,8 +37,10 @@ public class Bird extends Actor {
     display.add(wing2);
   }
 
+  //moves the bird along its patrol route
   @Override
   public void move(Cell ignore){
+    //checks if the patrol route is empty or null
     if(patrolRoute == null || patrolRoute.isEmpty()) return;
 
     Cell next = patrolRoute.get(routeIndex);
@@ -45,6 +48,7 @@ public class Bird extends Actor {
     int dirX = next.x - loc.x;
     int dirY = next.y - loc.y;
 
+    //updates the position of the bird
     for(Polygon p: display){
       for(int i = 0; i < p.npoints; i++){
         p.xpoints[i] += dirX;
@@ -57,19 +61,28 @@ public class Bird extends Actor {
     routeIndex = (routeIndex + 1) % patrolRoute.size();
   }
 
+  //creates a patrol route for the bird that circles counter-clockwise around the item
   public ArrayList<Cell> generateOrderedRoute(Cell loc, Grid grid){
     int x = grid.labelToCol(loc.col);
     int y = loc.row;
     ArrayList<Cell> route = new ArrayList<>();
 
-    route.add(grid.getCell(x, y - 1)); //left
-    route.add(grid.getCell(x + 1, y - 1)); //bottom left
-    route.add(grid.getCell(x + 1, y)); //bottom
-    route.add(grid.getCell(x + 1, y + 1)); //bottom right
-    route.add(grid.getCell(x, y + 1)); //right
-    route.add(grid.getCell(x - 1, y + 1)); //top right
-    route.add(grid.getCell(x - 1, y)); //top
-    route.add(grid.getCell(x - 1, y - 1)); //top left
+    //left cell
+    route.add(grid.getCell(x, y - 1)); 
+    //bottom left cell
+    route.add(grid.getCell(x + 1, y - 1)); 
+    //bottom cell
+    route.add(grid.getCell(x + 1, y)); 
+    //bottom right cell
+    route.add(grid.getCell(x + 1, y + 1)); 
+    //right cell
+    route.add(grid.getCell(x, y + 1)); 
+    //top right cell
+    route.add(grid.getCell(x - 1, y + 1)); 
+    //top cell
+    route.add(grid.getCell(x - 1, y)); 
+    //top left cell
+    route.add(grid.getCell(x - 1, y - 1)); 
     return route;
   }
 }
